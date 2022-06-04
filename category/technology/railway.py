@@ -47,10 +47,13 @@ class Trip:
             raise Exception("This train is not available!")
 
         return train
+    
+    def get_remaining_weight(self) -> float:
+        return self.train.weight_capacity - sum(map(lambda i: i.load_weight, self.passengers))
 
     # here implement the magic method
     def __call__(self):
-        return self.train.weight_capacity
+        return self.get_remaining_weight
         
 
 
@@ -65,7 +68,7 @@ class Passenger:
         self.load_weight = load_weight
 
     def attend_trip(self, trip: Trip):
-        if self.load_weight <= trip.train.weight_capacity:
+        if self.load_weight <= trip.get_remaining_weight():
             trip.passengers.append(self)
         else:
             raise Exception("Heavy load!")
